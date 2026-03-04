@@ -6,14 +6,14 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BRANDS } from "@/constants/brands";
-import { cn } from "@/lib/utils";
 import { useFilters } from "@/hooks/use-filters";
+import { cn } from "@/lib/utils";
 
 export const BrandList = () => {
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const {brands, setBrands} = useFilters();
-  
+  const { brands, setBrands } = useFilters();
+
   const filteredBrands = BRANDS.filter((brand) =>
     brand.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );

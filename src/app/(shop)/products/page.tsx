@@ -43,22 +43,13 @@ export default function ProductListingPage() {
 
           <main className="flex-1">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-              {/* <div>
-                <h3 className="text-xl font-black uppercase tracking-tight">
-                  Clothing
-                </h3>
-                <p className="text-xs text-zinc-400 font-medium">
-                  <div className="flex items-center gap-2">
-                    {isLoading ? (
-                      <div className="h-5 w-24 animate-pulse rounded-md bg-zinc-200 dark:bg-zinc-800" />
-                    ) : (
-                      <span className="text-sm font-medium">
-                        {(data?.length ?? 0) || 'No'} results found. 
-                      </span>
-                    )}
-                  </div>
-                </p>
-              </div> */}
+              {isLoading ? (
+                <div className="h-5 w-24 animate-pulse rounded-md bg-zinc-200 dark:bg-zinc-800" />
+              ) : data?.length ? (
+                <span className="text-sm font-medium">
+                  {(data?.length ?? 0) || "No"} results found.
+                </span>
+              ) : null}
 
               <div className="flex items-center gap-4 w-full sm:w-auto">
                 <div className="flex items-center bg-zinc-100 p-1 rounded-xl shadow-inner">

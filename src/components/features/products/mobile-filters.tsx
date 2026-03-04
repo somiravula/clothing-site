@@ -11,8 +11,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { BrandList } from "./brand-list";
 import { useFilters } from "@/hooks/use-filters";
+import { BrandList } from "./brand-list";
 
 export const MobileFilters = () => {
   const { clearFilters } = useFilters();
@@ -34,13 +34,13 @@ export const MobileFilters = () => {
               Filters
               <div>
                 <Button
-                    variant="ghost"
-                    onClick={clearFilters}
-                    className="flex items-center gap-2 text-[10px] font-black tracking-widest text-zinc-400 hover:text-red-500 transition-colors cursor-pointer uppercase p-0"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    Clear Filters
-                  </Button>
+                  variant="ghost"
+                  onClick={clearFilters}
+                  className="flex items-center gap-2 text-[10px] font-black tracking-widest text-zinc-400 hover:text-red-500 transition-colors cursor-pointer uppercase p-0"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Clear Filters
+                </Button>
               </div>
             </SheetTitle>
           </SheetHeader>

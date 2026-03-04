@@ -3,9 +3,9 @@
 import { useTransition } from "react";
 import { useGetProducts } from "@/hooks/use-get-products";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "./empty-state";
 import { ProductCard } from "./product-card";
 import { ProductSkeletonGrid } from "./product-skeleton-grid";
-import { EmptyState } from "./empty-state";
 
 interface ProductGridProps {
   view: "grid" | "list";
@@ -16,8 +16,7 @@ export const ProductGrid = ({ view }: ProductGridProps) => {
   const [isPending] = useTransition();
 
   if (isLoading && !products) return <ProductSkeletonGrid />;
-  if (isError || products?.length === 0)
-    return <EmptyState />
+  if (isError || products?.length === 0) return <EmptyState />;
 
   return (
     <section
