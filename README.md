@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aura | Modern Clothing E-Commerce (2026)
 
-## Getting Started
+A high-performance, frontend-first clothing storefront built with the **Next.js 15 App Router**. This project demonstrates senior-level architectural patterns, including stateless authentication, reactive URL state, and optimized client-side persistence.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🏗 Architectural Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Layer | Technology | Rationale |
+| :--- | :--- | :--- |
+| **Framework** | Next.js 15.2+ | Utilizing React 19, Server Actions, and the Node.js Middleware runtime. |
+| **Styling** | Tailwind CSS v4 | CSS-native engine (Rust-based) for zero-runtime overhead and instant builds. |
+| **Auth** | Better Auth | Stateless JWT-based session management. No database required for this evaluation. |
+| **State** | Zustand + nuqs | URL-synced filters for SEO/Shareability and Persisted storage for Cart logic. |
+| **Data Fetching** | TanStack Query | Managed caching, automatic refetching, and robust error/loading state handling. |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Key Technical Decisions
 
-## Learn More
+### 1. Stateless Authentication (Better Auth)
+Instead of a manual `js-cookie` implementation, we utilize **Better Auth** in stateless mode. This provides:
+* **Security:** HttpOnly, Secure, and SameSite cookie management handled natively.
+* **Developer Experience:** Full TypeScript safety for sessions without database overhead.
 
-To learn more about Next.js, take a look at the following resources:
+### 2. The "URL as Single Source of Truth"
+Using `nuqs`, every filter interaction (price, brand, search) is mirrored in the URL. This allows users to share specific filtered views and ensures the UI remains consistent after a hard refresh.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. Service Layer Abstraction
+All data fetching is abstracted into a `src/services` layer. This simulates real-world API interactions, including artificial latency and random failure injection to demonstrate resilient UI error handling.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. Optimized UI Components
+* **Vaul:** Gesture-driven drawer for the cart to provide a mobile-native experience.
+* **CVA (Class Variance Authority):** Type-safe UI primitives to prevent "prop-drilling" of styles.
+* **Next.js Image:** Automatic WebP/AVIF optimization and lazy loading for high-res product photos.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📁 Folder Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Used the `src/` directory to separate infrastructure (configs) from application logic.
+* `src/app`: Routes and global layouts.
+* `src/components/features`: Domain-specific components (Cart, ProductGrid).
+* `src/components/ui`: Shared atomic components (Button, Input).
+* `src/hooks`: Custom logic hooks (useFilters).
+* `src/store`: Client-side state (Zustand).
+
+---
+
+## 🛠 Getting Started
+
+1. **Install Dependencies:**
+   ```bash
+   npm install
