@@ -1,10 +1,10 @@
 import {
+  parseAsArrayOf,
+  parseAsBoolean,
+  parseAsInteger,
+  parseAsString,
   useQueryState,
   useQueryStates,
-  parseAsArrayOf,
-  parseAsString,
-  parseAsInteger,
-  parseAsBoolean,
 } from "nuqs";
 
 /**
@@ -12,12 +12,16 @@ import {
  * Uses 'nuqs' for type-safe, synchronized state.
  */
 export const useFilters = () => {
-  // 1. Define individual states with specialized parsers
   const [search, setSearch] = useQueryState(
     "search",
     parseAsString
       .withDefault("")
       .withOptions({ shallow: false, throttleMs: 300 }),
+  );
+
+  const [sort, setSort] = useQueryState(
+    "sort",
+    parseAsString.withDefault("featured"),
   );
 
   const [category, setCategory] = useQueryState("category", parseAsString);
@@ -27,35 +31,42 @@ export const useFilters = () => {
     parseAsBoolean.withDefault(false),
   );
 
-  // 2. Define groupable states (Multi-select filters)
+  const [brands, setBrands] = useQueryState(
+    "brands",
+    parseAsArrayOf(parseAsString).withDefault([]),
+  );
+
   const [filters, setFilters] = useQueryStates(
     {
-      brands: parseAsArrayOf(parseAsString).withDefault([]),
       sizes: parseAsArrayOf(parseAsString).withDefault([]),
       minPrice: parseAsInteger,
       maxPrice: parseAsInteger,
     },
     {
-      shallow: false, // Ensures Server Components re-run when these change
+      shallow: false,
     },
   );
 
-  // 3. Helper to clear all filters
   const clearFilters = () => {
     setSearch("");
     setCategory(null);
     setInStock(false);
+    setBrands([]);
     setFilters({
-      brands: [],
       sizes: [],
       minPrice: null,
       maxPrice: null,
     });
+    setSort("featured");
   };
 
   return {
     search,
     setSearch,
+    sort,
+    setSort,
+    brands,
+    setBrands,
     category,
     setCategory,
     inStock,
@@ -63,9 +74,9 @@ export const useFilters = () => {
     ...filters,
     setFilters,
     clearFilters,
-    // Derived state for the UI
+
     hasActiveFilters: Boolean(
-      search || category || filters.brands.length > 0 || filters.minPrice,
+      search || category || brands.length > 0 || filters.minPrice,
     ),
   };
 };

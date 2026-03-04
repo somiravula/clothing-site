@@ -1,48 +1,30 @@
-'use client';
+"use client";
 
-import { useQueryState } from 'nuqs';
-import { Input } from "@/components/ui/input";
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 import { useTransition } from "react";
-import { cn } from "@/lib/utils";
-import { Button } from '../ui/button';
+import { Input } from "@/components/ui/input";
+import { useFilters } from "@/hooks/use-filters";
 
 export const SearchBar = () => {
-  // 1. Sync 'search' key in URL with the input value
-  // shallow: false ensures it triggers a server-side re-render/refetch
-  const [search, setSearch] = useQueryState('search', {
-    shallow: false,
-    throttleMs: 500, // Debounce: Wait 500ms after typing before updating URL
-    clearOnDefault: true,
-  });
+  const { search, setSearch } = useFilters();
 
-  const [isPending, startTransition] = useTransition();
+  const [_isPending, startTransition] = useTransition();
 
   return (
     <div className="relative w-full max-w-[300px] group">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-foreground transition-colors">
-        <Search className={cn("h-4 w-4", isPending && "animate-pulse")} />
+      <div className="relative flex-1 group">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400 z-10 pointer-events-none" />
+        <Input
+          placeholder="What are you looking for?"
+          value={search || ""}
+          onChange={(e) => {
+            startTransition(() => {
+              setSearch(e.target.value || null);
+            });
+          }}
+          className="w-full h-12 pl-12 pr-4 rounded-xl border-zinc-100 bg-white shadow-sm placeholder:text-zinc-400 focus-visible:ring-zinc-200 transition-all"
+        />
       </div>
-      
-      <Input
-        placeholder="Search products..."
-        value={search || ''}
-        onChange={(e) => {
-          startTransition(() => {
-            setSearch(e.target.value || null);
-          });
-        }}
-        className="pl-10 pr-10 rounded-full bg-muted/50 border-none focus-visible:ring-1 focus-visible:ring-black transition-all"
-      />
-
-      {search && (
-        <Button
-          onClick={() => setSearch(null)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      )}
     </div>
   );
 };

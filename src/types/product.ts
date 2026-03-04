@@ -12,14 +12,3 @@ export type Product = {
   rating: number;
   reviewCount: number;
 };
-
-export type ProductFilterParams = {
-  brand?: string[];
-  minPrice?: number;
-  maxPrice?: number;
-  category?: string;
-  inStock?: boolean;
-  size?: string[];
-  search?: string;
-  page?: number;
-};

@@ -1,78 +1,44 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { useFilters } from "@/hooks/use-filters";
-import { getProducts } from "@/services/product.service";
+import { useTransition } from "react";
+import { useGetProducts } from "@/hooks/use-get-products";
+import { cn } from "@/lib/utils";
 import { ProductCard } from "./product-card";
-import { ProductSkeleton } from "./product-skeleton";
-import { Button } from "@/components/ui/button";
+import { ProductSkeletonGrid } from "./product-skeleton-grid";
+import { EmptyState } from "./empty-state";
 
-export const ProductGrid = () => {
-  const { brands, minPrice, maxPrice, category, search, inStock } =
-    useFilters();
+interface ProductGridProps {
+  view: "grid" | "list";
+}
 
-  // The Query Key is a dependency array. When filters change, refetch triggers.
-  const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: [
-      "products",
-      { brands, minPrice, maxPrice, category, search, inStock },
-    ],
-    queryFn: () =>
-      getProducts({
-        brand: brands,
-        minPrice: minPrice ?? undefined,
-        maxPrice: maxPrice ?? undefined,
-        category: category ?? undefined,
-        search,
-        inStock,
-      }),
-    retry: 1, // Don't annoy the user with infinite retries on simulated errors
-  });
+export const ProductGrid = ({ view }: ProductGridProps) => {
+  const { data: products, isLoading, isError } = useGetProducts();
+  const [isPending] = useTransition();
 
-  // 1. Loading State (Skeletons)
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {Array.from({ length: 8 }).map(() => (
-          <ProductSkeleton key={crypto.randomUUID()} />
-        ))}
-      </div>
-    );
-  }
+  if (isLoading && !products) return <ProductSkeletonGrid />;
+  if (isError || products?.length === 0)
+    return <EmptyState />
 
-  // 2. Error State
-  if (isError) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <h3 className="text-lg font-semibold text-red-600">
-          Something went wrong
-        </h3>
-        <p className="text-muted-foreground mb-4">{(error as Error).message}</p>
-        <Button onClick={() => refetch()} variant="outline">
-          Try Again
-        </Button>
-      </div>
-    );
-  }
-
-  // 3. Empty State
-  if (!data || data.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <h3 className="text-xl font-medium">No products found</h3>
-        <p className="text-muted-foreground">
-          Try adjusting your filters or search query.
-        </p>
-      </div>
-    );
-  }
-
-  // 4. Success State
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {data.map((product) => (
-        <ProductCard key={product.id} product={product} />
+    <section
+      className={cn(
+        "grid gap-6 transition-all duration-500",
+
+        view === "grid"
+          ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          : "grid-cols-1",
+        isPending && "opacity-40 pointer-events-none",
+      )}
+    >
+      {products?.map((product, index) => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          variant={view}
+          style={{ animationDelay: `${index * 50}ms` }}
+          className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+        />
       ))}
-    </div>
+    </section>
   );
 };

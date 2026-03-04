@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import type { Product } from "@/types/product";
 
 interface CartItem extends Product {
@@ -13,7 +13,7 @@ interface CartState {
   removeItem: (productId: string, size?: string) => void;
   updateQuantity: (productId: string, quantity: number, size?: string) => void;
   clearCart: () => void;
-  // Selectors (Derived State)
+
   getTotalItems: () => number;
   getTotalPrice: () => number;
 }
@@ -71,14 +71,13 @@ export const useCartStore = create<CartState>()(
 
       clearCart: () => set({ items: [] }),
 
-      // Calculated values
       getTotalItems: () =>
         get().items.reduce((acc, item) => acc + item.quantity, 0),
       getTotalPrice: () =>
         get().items.reduce((acc, item) => acc + item.price * item.quantity, 0),
     }),
     {
-      name: "clothing-storage", // Key for localStorage
+      name: "clothing-storage",
       storage: createJSONStorage(() => localStorage),
     },
   ),
