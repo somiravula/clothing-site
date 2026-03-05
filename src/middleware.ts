@@ -11,9 +11,6 @@ export default function middleware(request: NextRequest) {
   );
 
   if (isPublicRoute) {
-    if (sessionToken) {
-      return NextResponse.redirect(new URL("/products", request.url));
-    }
     return NextResponse.next();
   }
 

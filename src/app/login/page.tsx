@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -24,7 +24,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 
 const emailSchema = z.string().email("Please enter a valid email address");
 
@@ -68,6 +68,13 @@ export default function AuthPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/products";
+  const { data: session, isPending: isSessionPending } = useSession();
+
+  useEffect(() => {
+    if (!isSessionPending && session) {
+      router.replace(callbackUrl);
+    }
+  }, [callbackUrl, isSessionPending, router, session]);
 
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(isSignUp ? signUpSchema : loginSchema),

@@ -1,0 +1,58 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - img "Stella Editorial" [ref=e4]
+      - generic [ref=e5]:
+        - img "Stella" [ref=e7]
+        - blockquote [ref=e8]:
+          - paragraph [ref=e9]: "\"Style is a way to say who you are without having to speak.\""
+          - generic [ref=e10]: Rachel Zoe — Global Stylist
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - heading "Create Account" [level=1] [ref=e14]
+        - paragraph [ref=e15]: Join our curated fashion community.
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - text: Full Name
+          - generic [ref=e18]:
+            - img [ref=e19]
+            - textbox "Alex Stella" [ref=e22]: Playwright User
+          - paragraph [ref=e23]
+        - generic [ref=e24]:
+          - text: Email Address
+          - generic [ref=e25]:
+            - img [ref=e26]
+            - textbox "name@company.com" [ref=e29]: playwright.1772736366944@example.com
+          - paragraph [ref=e30]
+        - generic [ref=e31]:
+          - generic [ref=e33]: Password
+          - generic [ref=e34]:
+            - img [ref=e35]
+            - textbox "••••••••" [ref=e38]: Playwright@123
+          - paragraph [ref=e39]
+        - button [disabled]:
+          - img
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - text: Already a member?
+          - button "Sign In" [ref=e42]
+        - generic [ref=e43]:
+          - img [ref=e44]
+          - paragraph [ref=e47]: Secure session by Better-Auth v1.1
+  - region "Notifications alt+T"
+  - generic [ref=e52] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e53]:
+      - img [ref=e54]
+    - generic [ref=e57]:
+      - button "Open issues overlay" [ref=e58]:
+        - generic [ref=e59]:
+          - generic [ref=e60]: "0"
+          - generic [ref=e61]: "1"
+        - generic [ref=e62]: Issue
+      - button "Collapse issues badge" [ref=e63]:
+        - img [ref=e64]
+  - alert [ref=e66]
+```
