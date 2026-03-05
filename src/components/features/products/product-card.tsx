@@ -1,6 +1,7 @@
 "use client";
 
-import { Heart, Star } from "lucide-react";
+import { useSession } from "@/lib/auth-client";
+import { Heart, Loader2, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { HTMLAttributes } from "react";
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useFavoriteStore } from "@/store/use-favorite-store";
 import type { Product } from "@/types/product";
+import { toast } from "sonner";
 
 interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   product: Product;
@@ -27,12 +29,19 @@ const ProductCardComponent = ({
   const toggleFavorite = useFavoriteStore((s) => s.toggleFavorite);
   const isFav = useFavoriteStore((s) => s.isFavorite(product.id));
 
+  const { data: session, isPending } = useSession();
+  const isLoggedIn = !!session;
+
   const handleToggleFav = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
+      if (!isLoggedIn) {
+      toast.error("Please login to save favorites");
+      return;
+    }
       toggleFavorite(product.id);
     },
-    [toggleFavorite, product.id],
+    [toggleFavorite, product.id, isLoggedIn],
   );
 
   return (
@@ -74,7 +83,9 @@ const ProductCardComponent = ({
           )}
         </div>
 
-        <Button
+        {
+          isLoggedIn ? (
+            <Button
           variant="ghost"
           size="icon"
           className={cn(
@@ -94,6 +105,10 @@ const ProductCardComponent = ({
             )}
           />
         </Button>
+          ) : isPending ?(
+          <Loader2 className="h-4 w-4 animate-spin text-zinc-300" />
+          ): null
+        }
       </div>
 
       <div className="flex flex-1 flex-col p-4 md:p-6">

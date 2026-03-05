@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useGetProducts } from "@/hooks/use-get-products";
 import { useFavoriteStore } from "@/store/use-favorite-store";
 
-export default function WishlistPage() {
+export function WishlistPageClient() {
   const { data: products } = useGetProducts();
   const favourites = useFavoriteStore((s) => s.items);
   const wishlistItems = (products ?? []).filter((i) =>

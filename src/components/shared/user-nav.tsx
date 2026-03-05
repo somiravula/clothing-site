@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  ChevronDown,
-  Loader2,
-  LogOut,
-  Settings,
-  User,
-  UserPlus,
-} from "lucide-react";
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { ChevronDown, Loader2, LogOut, Settings, User } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,34 +12,57 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useFilters } from "@/hooks/use-filters";
+import { signOut, useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { useCartStore } from "@/store/use-cart-store";
+import { useFavoriteStore } from "@/store/use-favorite-store";
 import { Button } from "../ui/button";
 
-const MOCK_USER = {
-  name: "Somesh Ravula",
-  email: "someshravula@stella.com",
-  image: "/user.jpg",
+const getInitials = (name: string) => {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) {
+    return parts[0]?.slice(0, 2).toUpperCase() || "US";
+  }
+  return `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? ""}`.toUpperCase();
 };
 
 export const UserNav = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { data: session, isPending } = useSession();
+  const isLoggedIn = Boolean(session);
+  const { clearFavorites } = useFavoriteStore();
+  const { clearCart } = useCartStore();
+  const { clearFilters } = useFilters();
+  const queryClient = useQueryClient();
 
-  const handleAuthAction = (action: "login" | "signup") => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoggedIn(true);
-      setIsLoading(false);
-      toast.success(`${action === "login" ? "Login" : "Signup"} Successful`, {
-        description: `Welcome to Stella, ${MOCK_USER.name}!`,
-      });
-    }, 800);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const displayName = session?.user.name || "User";
+  const displayEmail = session?.user.email || "";
+  const displayImage = session?.user.image || "";
+  const initials = getInitials(displayName);
+
+  const handleAuthAction = () => {
+    const callbackUrl = encodeURIComponent(pathname || "/products");
+    router.push(`/login?callbackUrl=${callbackUrl}`);
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    toast.info("Logged out", {
-      description: "Come back soon!",
+  const handleLogout = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          toast.info("Logged out", {
+            description: "Come back soon!",
+          });
+          clearFavorites();
+          clearCart();
+          clearFilters();
+          queryClient.clear();
+          router.push("/login");
+          router.refresh();
+        },
+      },
     });
   };
 
@@ -61,14 +78,14 @@ export const UserNav = () => {
         >
           {isLoggedIn ? (
             <Avatar className="h-8 w-8 border-2 border-transparent group-hover:border-cyan-500 transition-all">
-              <AvatarImage src={MOCK_USER.image} alt={MOCK_USER.name} />
+              <AvatarImage src={displayImage} alt={displayName} />
               <AvatarFallback className="bg-cyan-500 text-white text-[10px] font-bold">
-                AR
+                {initials}
               </AvatarFallback>
             </Avatar>
           ) : (
             <div className="h-8 w-8 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-zinc-200">
-              {isLoading ? (
+              {isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
               ) : (
                 <User className="h-4 w-4 text-zinc-600" />
@@ -77,8 +94,8 @@ export const UserNav = () => {
           )}
 
           {isLoggedIn && (
-            <span className="hidden md:block text-sm font-bold truncate max-w-[100px]">
-              {MOCK_USER.name.split(" ")[0]}
+            <span className="hidden md:block text-sm font-bold truncate max-w-[140px]">
+              {displayName.split(" ")[0]}
             </span>
           )}
 
@@ -99,14 +116,14 @@ export const UserNav = () => {
               </p>
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold">
-                  SR
+                  {initials}
                 </div>
                 <div className="flex flex-col text-left">
                   <span className="text-sm font-black text-zinc-900 leading-none">
-                    {MOCK_USER.name}
+                    {displayName}
                   </span>
                   <span className="text-[10px] text-zinc-500">
-                    Premium Member
+                    {displayEmail}
                   </span>
                 </div>
               </div>
@@ -136,18 +153,11 @@ export const UserNav = () => {
             </DropdownMenuLabel>
             <div className="space-y-1">
               <DropdownMenuItem
-                onClick={() => handleAuthAction("login")}
+                onClick={handleAuthAction}
                 className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-cyan-50 text-cyan-600 outline-none border-none"
               >
                 <User className="h-4 w-4" />
                 <span className="text-sm font-bold">Log In</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleAuthAction("signup")}
-                className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-zinc-50 outline-none border-none"
-              >
-                <UserPlus className="h-4 w-4" />
-                <span className="text-sm font-bold">Create Account</span>
               </DropdownMenuItem>
             </div>
           </>

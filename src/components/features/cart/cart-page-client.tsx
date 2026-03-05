@@ -13,7 +13,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/use-cart-store";
 
-export default function CartPage() {
+export function CartPageClient() {
   const { items, updateQuantity, removeItem, getTotalPrice } = useCartStore();
   const subtotal = getTotalPrice();
 
