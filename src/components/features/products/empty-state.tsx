@@ -10,7 +10,7 @@ export const EmptyState = () => {
 
   return (
     <div className="flex flex-col items-center justify-center py-32 px-4 animate-in fade-in zoom-in-95 duration-500">
-      {/* 1. Glassmorphic Icon Container */}
+      
       <div className="relative mb-8">
         <div className="absolute inset-0 bg-cyan-100/50 blur-3xl rounded-full" />
         <div className="relative h-24 w-24 rounded-[32px] bg-white shadow-[0_20px_40px_rgba(0,0,0,0.05)] border border-white flex items-center justify-center">
@@ -21,7 +21,7 @@ export const EmptyState = () => {
         </div>
       </div>
 
-      {/* 2. High-Contrast Typography */}
+      
       <div className="text-center max-w-sm space-y-3">
         <h3 className="text-2xl font-black tracking-tight text-zinc-900">
           No matches found
@@ -35,7 +35,7 @@ export const EmptyState = () => {
         </p>
       </div>
 
-      {/* 3. Action Island */}
+      
       <div className="mt-10 flex flex-col sm:flex-row gap-3">
         <ClearFilters />
 
@@ -47,7 +47,7 @@ export const EmptyState = () => {
         </Button>
       </div>
 
-      {/* 4. Subtle Hint */}
+      
       <p className="mt-8 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-300">
         Stella Curated Apparel
       </p>

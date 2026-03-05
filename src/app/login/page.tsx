@@ -27,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
-// 1. Schema Definition (Zod)
+
 const authSchema = z.object({
   name: z.string().optional(),
   email: z.string().email("Please enter a valid email address"),
@@ -47,12 +47,12 @@ type AuthFormValues = z.infer<typeof authSchema>;
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false); // Toggle between Login and Signup
+  const [isSignUp, setIsSignUp] = useState(false); 
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/products";
 
-  // 2. Hook Form Initialization
+  
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -62,7 +62,7 @@ export default function AuthPage() {
     },
   });
 
-  // 3. Dual-Action Submit Handler
+  
   const onSubmit = async (values: AuthFormValues) => {
     setIsLoading(true);
 
@@ -77,7 +77,7 @@ export default function AuthPage() {
         return;
       }
 
-      // --- SIGN UP FLOW ---
+      
       const { error } = await authClient.signUp.email({
         email: values.email,
         password: values.password,
@@ -92,7 +92,7 @@ export default function AuthPage() {
       }
       toast.success("Welcome to Stella!");
     } else {
-      // --- SIGN IN FLOW ---
+      
       const { error } = await authClient.signIn.email({
         email: values.email,
         password: values.password,
@@ -113,7 +113,6 @@ export default function AuthPage() {
 
   return (
     <main className="grid min-h-screen grid-cols-1 lg:grid-cols-2 bg-white">
-      {/* Visual Brand Panel */}
       <section className="relative hidden lg:block bg-zinc-950">
         <Image
           src="/stella.png"
@@ -123,19 +122,16 @@ export default function AuthPage() {
           className="object-cover opacity-40 grayscale"
         />
         <div className="relative z-10 flex h-full flex-col justify-between p-16 text-white">
-          {/* <h2 className="text-3xl font-black tracking-tighter italic uppercase">
-            Stella
-          </h2> */}
           <div className="p-3">
-        <Image
-          src="/stella.png"
-          alt="Stella"
-          width={1011}
-          height={341}
-          className="h-12 w-auto object-contain"
-          priority
-        />
-      </div>
+            <Image
+              src="/stella.png"
+              alt="Stella"
+              width={1011}
+              height={341}
+              className="h-12 w-auto object-contain"
+              priority
+            />
+          </div>
           <blockquote className="max-w-md">
             <p className="text-4xl font-serif italic leading-tight text-zinc-200">
               "Style is a way to say who you are without having to speak."
@@ -157,7 +153,6 @@ export default function AuthPage() {
         />
       </div>
 
-      {/* Form Panel */}
       <section className="flex flex-col items-center justify-center p-8 lg:p-20">
         <div className="w-full max-w-[420px] space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
           <header className="space-y-3 text-center lg:text-left">
@@ -173,7 +168,7 @@ export default function AuthPage() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Name Field (Only visible on Sign Up) */}
+              
               {isSignUp && (
                 <FormField
                   control={form.control}
