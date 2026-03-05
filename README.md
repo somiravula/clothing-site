@@ -67,8 +67,9 @@ pnpm dev
 **Placeholders**
 
 
-- Demo video (Desktop): [https://www.loom.com/share/1f0b601ec8d04bfb883ef2fdd81ea3a9](https://www.loom.com/share/1f0b601ec8d04bfb883ef2fdd81ea3a9)
-- Demo video (Mobile): [https://www.loom.com/share/ce31a761dd7347f78f48022eb78bebbe](https://www.loom.com/share/ce31a761dd7347f78f48022eb78bebbe)
+- Demo video (Desktop): [https://www.loom.com/share/8a56b87f3f844a298d083c1314378831](https://www.loom.com/share/8a56b87f3f844a298d083c1314378831)
+- Demo video (Mobile): [https://www.loom.com/share/09ff4b48a74048f68bcafa0a2365a986](https://www.loom.com/share/09ff4b48a74048f68bcafa0a2365a986)
+
 
 **E2E Testing (Local)**
 
