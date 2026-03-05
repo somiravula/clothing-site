@@ -13,30 +13,35 @@ import {
 } from "@/components/ui/sheet";
 import { useFilters } from "@/hooks/use-filters";
 import { BrandList } from "./brand-list";
+import { ColorFilter } from "./color-filter";
+import { SizeFilter } from "./size-filter";
+import { StockFilter } from "./stock-filter";
 
 export const MobileFilters = () => {
   const { clearFilters } = useFilters();
+
   return (
-    <div className="lg:hidden mb-4">
+    <div className="mb-4 lg:hidden">
       <Sheet>
         <SheetTrigger asChild>
           <Button
             variant="outline"
-            className="w-full flex items-center justify-between rounded-full h-12 border-zinc-200"
+            className="flex h-12 w-full items-center justify-between rounded-full border-zinc-200"
           >
             <span className="text-sm font-bold">Filters</span>
             <Filter className="h-4 w-4 text-zinc-500" />
           </Button>
         </SheetTrigger>
+
         <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-          <SheetHeader className="text-left border-b pb-4">
+          <SheetHeader className="border-b pb-4 text-left">
             <SheetTitle className="text-xl font-black uppercase tracking-tight">
               Filters
               <div>
                 <Button
                   variant="ghost"
                   onClick={clearFilters}
-                  className="flex items-center gap-2 text-[10px] font-black tracking-widest text-zinc-400 hover:text-red-500 transition-colors cursor-pointer uppercase p-0"
+                  className="cursor-pointer gap-2 p-0 text-[10px] font-black uppercase tracking-widest text-zinc-400 transition-colors hover:text-red-500"
                 >
                   <Trash2 className="h-4 w-4" />
                   Clear Filters
@@ -44,16 +49,46 @@ export const MobileFilters = () => {
               </div>
             </SheetTitle>
           </SheetHeader>
-          <div className="py-6 overflow-y-auto h-full pb-20">
+
+          <div className="h-full overflow-y-auto pb-20 py-6">
             <div className="mb-8">
-              <h3 className="text-xs font-black uppercase tracking-widest text-zinc-400 mb-4 px-1">
+              <h3 className="mb-4 px-1 text-xs font-black uppercase tracking-widest text-zinc-400">
+                Availability
+              </h3>
+              <StockFilter />
+            </div>
+
+            <Separator className="bg-zinc-100" />
+
+            <div className="my-8">
+              <h3 className="mb-4 px-1 text-xs font-black uppercase tracking-widest text-zinc-400">
                 Brands
               </h3>
               <BrandList />
             </div>
+
             <Separator className="bg-zinc-100" />
-            <div>
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-4">
+
+            <div className="my-8">
+              <h3 className="mb-4 px-1 text-xs font-black uppercase tracking-widest text-zinc-400">
+                Size
+              </h3>
+              <SizeFilter />
+            </div>
+
+            <Separator className="bg-zinc-100" />
+
+            <div className="my-8">
+              <h3 className="mb-4 px-1 text-xs font-black uppercase tracking-widest text-zinc-400">
+                Color
+              </h3>
+              <ColorFilter />
+            </div>
+
+            <Separator className="bg-zinc-100" />
+
+            <div className="mt-8">
+              <h3 className="mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">
                 Price Range
               </h3>
               <PriceRangeSelector />

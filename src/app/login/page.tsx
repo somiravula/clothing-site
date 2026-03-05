@@ -123,9 +123,19 @@ export default function AuthPage() {
           className="object-cover opacity-40 grayscale"
         />
         <div className="relative z-10 flex h-full flex-col justify-between p-16 text-white">
-          <h2 className="text-3xl font-black tracking-tighter italic uppercase">
+          {/* <h2 className="text-3xl font-black tracking-tighter italic uppercase">
             Stella
-          </h2>
+          </h2> */}
+          <div className="p-3">
+        <Image
+          src="/stella.png"
+          alt="Stella"
+          width={1011}
+          height={341}
+          className="h-12 w-auto object-contain"
+          priority
+        />
+      </div>
           <blockquote className="max-w-md">
             <p className="text-4xl font-serif italic leading-tight text-zinc-200">
               "Style is a way to say who you are without having to speak."
@@ -136,6 +146,16 @@ export default function AuthPage() {
           </blockquote>
         </div>
       </section>
+      <div className="p-3 lg:hidden">
+        <Image
+          src="/stella.png"
+          alt="Stella"
+          width={1011}
+          height={341}
+          className="h-12 w-auto object-contain"
+          priority
+        />
+      </div>
 
       {/* Form Panel */}
       <section className="flex flex-col items-center justify-center p-8 lg:p-20">

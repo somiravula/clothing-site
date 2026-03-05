@@ -1,3 +1,5 @@
+import type { ProductColor } from "@/constants/colors";
+
 export type Product = {
   id: string;
   name: string;
@@ -7,6 +9,7 @@ export type Product = {
   originalPrice?: number;
   images: string[];
   sizes: string[];
+  colors: ProductColor[];
   isNew: boolean;
   inStock: boolean;
   rating: number;

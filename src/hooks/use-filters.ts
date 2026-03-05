@@ -7,10 +7,6 @@ import {
   useQueryStates,
 } from "nuqs";
 
-/**
- * Custom hook to manage product filtering logic via URL parameters.
- * Uses 'nuqs' for type-safe, synchronized state.
- */
 export const useFilters = () => {
   const [search, setSearch] = useQueryState(
     "search",
@@ -39,6 +35,7 @@ export const useFilters = () => {
   const [filters, setFilters] = useQueryStates(
     {
       sizes: parseAsArrayOf(parseAsString).withDefault([]),
+      colors: parseAsArrayOf(parseAsString).withDefault([]),
       minPrice: parseAsInteger,
       maxPrice: parseAsInteger,
     },
@@ -54,6 +51,7 @@ export const useFilters = () => {
     setBrands([]);
     setFilters({
       sizes: [],
+      colors: [],
       minPrice: null,
       maxPrice: null,
     });
@@ -76,7 +74,14 @@ export const useFilters = () => {
     clearFilters,
 
     hasActiveFilters: Boolean(
-      search || category || brands.length > 0 || filters.minPrice,
+      search ||
+        category ||
+        inStock ||
+        brands.length > 0 ||
+        filters.sizes.length > 0 ||
+        filters.colors.length > 0 ||
+        filters.minPrice != null ||
+        filters.maxPrice != null,
     ),
   };
 };
