@@ -16,6 +16,7 @@ export const CartAndFav = () => {
     <>
       <Link
         href="/cart"
+        aria-label="Open cart"
         className="group relative cursor-pointer hover:opacity-70 transition-opacity"
       >
         <ShoppingCart className="h-7 w-7 text-zinc-400 stroke-[1.2px]" />
@@ -27,6 +28,7 @@ export const CartAndFav = () => {
       {isLoggedIn ? (
         <Link
           href="/wishlist"
+          aria-label="Open wishlist"
           className="group relative cursor-pointer hover:opacity-70 transition-opacity"
         >
           <Heart className="h-7 w-7 text-zinc-400 stroke-[1.2px]" />
