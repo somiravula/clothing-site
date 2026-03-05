@@ -22,39 +22,55 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
+const emailSchema = z.string().email("Please enter a valid email address");
 
-const authSchema = z.object({
+const signUpPasswordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+  .regex(/[0-9]/, "Password must contain at least one digit")
+  .regex(
+    /[@$&_-]/,
+    "Password must contain at least one special character (@, $, &, _, or -)",
+  );
+
+const nameSchema = z
+  .string()
+  .min(2, "Name must be at least 2 characters")
+  .max(20, "Name must be at most 20 characters")
+  .regex(
+    /^[A-Za-z0-9 ]+$/,
+    "Name can contain only letters, numbers, and spaces",
+  );
+
+const loginSchema = z.object({
   name: z.string().optional(),
-  email: z.string().email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one digit")
-    .regex(
-      /[@$&_-]/,
-      "Password must contain at least one special character (@, $, &, _, or -)",
-    ),
+  email: emailSchema,
+  password: z.string().min(1, "Password is required"),
 });
 
-type AuthFormValues = z.infer<typeof authSchema>;
+const signUpSchema = z.object({
+  name: nameSchema,
+  email: emailSchema,
+  password: signUpPasswordSchema,
+});
+
+type AuthFormValues = z.infer<typeof loginSchema>;
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false); 
+  const [isSignUp, setIsSignUp] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/products";
 
-  
   const form = useForm<AuthFormValues>({
-    resolver: zodResolver(authSchema),
+    resolver: zodResolver(isSignUp ? signUpSchema : loginSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -62,26 +78,14 @@ export default function AuthPage() {
     },
   });
 
-  
   const onSubmit = async (values: AuthFormValues) => {
     setIsLoading(true);
 
     if (isSignUp) {
-      const parsedName = values.name?.trim() ?? "";
-      if (parsedName.length < 2) {
-        form.setError("name", {
-          type: "manual",
-          message: "Name is required for sign up",
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      
       const { error } = await authClient.signUp.email({
         email: values.email,
         password: values.password,
-        name: parsedName,
+        name: values.name ?? "",
         callbackURL: callbackUrl,
       });
 
@@ -92,7 +96,6 @@ export default function AuthPage() {
       }
       toast.success("Welcome to Stella!");
     } else {
-      
       const { error } = await authClient.signIn.email({
         email: values.email,
         password: values.password,
@@ -168,12 +171,11 @@ export default function AuthPage() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              
               {isSignUp && (
                 <FormField
                   control={form.control}
                   name="name"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem className="animate-in fade-in slide-in-from-top-2 duration-300">
                       <FormLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
                         Full Name
@@ -188,7 +190,9 @@ export default function AuthPage() {
                           />
                         </div>
                       </FormControl>
-                      <FormMessage className="font-bold text-rose-500" />
+                      <p className="min-h-5 pt-1 text-xs font-bold text-rose-500">
+                        {fieldState.error?.message ?? " "}
+                      </p>
                     </FormItem>
                   )}
                 />
@@ -197,7 +201,7 @@ export default function AuthPage() {
               <FormField
                 control={form.control}
                 name="email"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
                       Email Address
@@ -212,7 +216,9 @@ export default function AuthPage() {
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="font-bold text-rose-500" />
+                    <p className="min-h-5 pt-1 text-xs font-bold text-rose-500">
+                      {fieldState.error?.message ?? " "}
+                    </p>
                   </FormItem>
                 )}
               />
@@ -220,19 +226,16 @@ export default function AuthPage() {
               <FormField
                 control={form.control}
                 name="password"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <div className="flex justify-between items-center">
                       <FormLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
                         Password
                       </FormLabel>
                       {!isSignUp && (
-                        <Button
-                          variant="link"
-                          className="h-auto p-0 text-[10px] font-bold uppercase text-cyan-600"
-                        >
+                        <span className="h-auto p-0 text-[10px] font-bold uppercase text-cyan-600">
                           Forgot?
-                        </Button>
+                        </span>
                       )}
                     </div>
                     <FormControl>
@@ -246,7 +249,9 @@ export default function AuthPage() {
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="font-bold text-rose-500" />
+                    <p className="min-h-5 pt-1 text-xs font-bold text-rose-500">
+                      {fieldState.error?.message ?? " "}
+                    </p>
                   </FormItem>
                 )}
               />
@@ -275,7 +280,10 @@ export default function AuthPage() {
               </span>{" "}
               <Button
                 variant="ghost"
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={() => {
+                  form.clearErrors();
+                  setIsSignUp(!isSignUp);
+                }}
                 className="font-bold text-zinc-900 hover:text-cyan-600 p-0 h-auto underline-offset-4 hover:underline"
               >
                 {isSignUp ? "Sign In" : "Create an account"}
