@@ -1,11 +1,11 @@
+import { getSessionCookie } from "better-auth/cookies";
 import { type NextRequest, NextResponse } from "next/server";
 
-const SESSION_COOKIE_NAME = "better-auth.session_token";
 const PUBLIC_PREFIXES = ["/login"];
 
 export default function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-  const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+  const sessionToken = getSessionCookie(request.headers);
   const isPublicRoute = PUBLIC_PREFIXES.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`),
   );
